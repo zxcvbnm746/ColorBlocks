@@ -1,12 +1,15 @@
 package com.colorblocks;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,8 +74,24 @@ public class ColorBlocksMod {
         BlockRegistry.ITEMS.register(bus);
         BlockRegistry.BLOCK_ENTITY_TYPES.register(bus);
 
+        bus.addListener(this::addCreativeTab);
+
         long elapsed = System.currentTimeMillis() - start;
         LOG.info("ColorBlocks: registered in {}ms", elapsed);
+    }
+
+    private void addCreativeTab(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+            for (ItemSupplier is : ITEM_SUPPLIERS) {
+                DeferredHolder<Block, Block> blockHolder = BLOCK_HOLDERS.get(is.id);
+                if (blockHolder != null) {
+                    Item item = blockHolder.get().asItem();
+                    if (item != null) {
+                        event.accept(new ItemStack(item));
+                    }
+                }
+            }
+        }
     }
 
     public record BlockSupplier(String id, int r, int g, int b, int type) {}
