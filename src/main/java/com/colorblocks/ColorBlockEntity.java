@@ -11,8 +11,8 @@ public class ColorBlockEntity extends BlockEntity {
 
     public int r, g, b, blockType;
 
-    public ColorBlockEntity(BlockEntityType<ColorBlockEntity> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+    public ColorBlockEntity(BlockPos pos, BlockState state) {
+        super(pos, state);
         this.r = 0;
         this.g = 0;
         this.b = 0;
