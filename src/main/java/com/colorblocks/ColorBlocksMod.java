@@ -57,8 +57,8 @@ public class ColorBlocksMod {
                 BlockEntityType.Builder.of(
                         new BlockEntityType.BlockEntitySupplier<>() {
                             @Override
-                            public ColorBlockEntity create(BlockEntityType<ColorBlockEntity> type, BlockPos pos, BlockState state) {
-                                return new ColorBlockEntity(type, pos, state);
+                            public ColorBlockEntity create(BlockPos pos, BlockState state) {
+                                return new ColorBlockEntity(pos, state);
                             }
                         },
                         allBlocks

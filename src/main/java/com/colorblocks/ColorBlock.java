@@ -49,8 +49,7 @@ public class ColorBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        ColorBlockEntity be = new ColorBlockEntity(
-                ColorBlocksMod.COLOR_BLOCK_ENTITY.get(), pos, state);
+        ColorBlockEntity be = new ColorBlockEntity(pos, state);
         be.setColor(r, g, b, blockType);
         return be;
     }
