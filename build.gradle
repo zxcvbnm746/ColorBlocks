@@ -1,15 +1,10 @@
 plugins {
     id 'java-library'
-    id 'maven-publish'
     id 'net.neoforged.gradle.userdev' version '7.0.145'
 }
 
 version = '1.0.0'
 group = 'com.colorblocks'
-
-repositories {
-    mavenCentral()
-}
 
 base {
     archivesName = 'colorblocks'
@@ -17,13 +12,12 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
+repositories {
+    mavenCentral()
+}
 
-runs {
-    client {
-        workingDirectory project.file('run')
-        modSource project.sourceSets.main
-    }
+dependencies {
+    implementation 'net.neoforged:neoforge:21.1.86'
 }
 
 tasks.withType(JavaCompile).configureEach {
