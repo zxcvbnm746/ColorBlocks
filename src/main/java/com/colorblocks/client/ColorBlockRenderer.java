@@ -1,7 +1,6 @@
 package com.colorblocks.client;
 
 import com.colorblocks.BlockRegistry;
-import com.colorblocks.ColorBlockEntity;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.renderer.*;
@@ -22,17 +21,21 @@ public class ColorBlockRenderer {
      * Returns: PNG bytes.
      */
     public static byte[] generateColorPNG(int r8, int g8, int b8) {
-        NativeImage image = new NativeImage(16, 16, NativeImage.Format.RGBA);
-        int pixel = (0xFF << 24) | (r8 << 16) | (g8 << 8) | b8;
-        for (int y = 0; y < 16; y++) {
-            for (int x = 0; x < 16; x++) {
-                image.setPixelRGBA(x, y, pixel);
+        try {
+            NativeImage image = new NativeImage(NativeImage.Format.RGBA, 16, 16, false);
+            int pixel = (0xFF << 24) | (r8 << 16) | (g8 << 8) | b8;
+            for (int y = 0; y < 16; y++) {
+                for (int x = 0; x < 16; x++) {
+                    image.setPixelRGBA(x, y, pixel);
+                }
             }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            image.writeToChannel(baos);
+            image.close();
+            return baos.toByteArray();
+        } catch (Exception e) {
+            return new byte[0];
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.writeToStream(baos, null);
-        image.close();
-        return baos.toByteArray();
     }
 
     /**
@@ -59,7 +62,6 @@ public class ColorBlockRenderer {
         int ri = BlockRegistry.to8bit(r5);
         int gi = BlockRegistry.to8bit(g5);
         int bi = BlockRegistry.to8bit(b5);
-        int color = 0xFF000000 | (ri << 16) | (gi << 8) | bi;
 
         float x1, x2, y1, y2, z1, z2;
         if (blockType == BlockRegistry.TYPE_SLAB) {
@@ -75,6 +77,7 @@ public class ColorBlockRenderer {
         Matrix3f n = poseStack.last().normal();
 
         // Front (Z-), Back (Z+), Bottom (Y-), Top (Y+), Left (X-), Right (X+)
+        int color = 0xFF000000 | (ri << 16) | (gi << 8) | bi;
         quad(vc, m, n, x1, y1, z1, x2, y2, z1, color, packedLight, packedOverlay,  0,  0, -1);
         quad(vc, m, n, x2, y1, z2, x1, y2, z2, color, packedLight, packedOverlay,  0,  0,  1);
         quad(vc, m, n, x1, y1, z1, x2, y1, z2, color, packedLight, packedOverlay,  0, -1,  0);

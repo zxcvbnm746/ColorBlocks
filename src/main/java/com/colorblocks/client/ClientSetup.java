@@ -6,21 +6,18 @@ import net.minecraft.server.packs.PackType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.event.RegisterBlockEntityRenderersEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 
 @EventBusSubscriber(modid = ColorBlocksMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
 
-    // Called lazily AFTER ColorBlocksMod constructor sets COLOR_BLOCK_ENTITY
     @SubscribeEvent
     public static void registerRenderers(RegisterBlockEntityRenderersEvent event) {
-        // Access the field inside the method, not at annotation processing time
-        var colorBlockEntity = ColorBlocksMod.COLOR_BLOCK_ENTITY;
-        if (colorBlockEntity != null) {
-            event.registerBlockEntityRenderers(
-                    colorBlockEntity.get(),
-                    context -> new ColorBlockEntityRenderer(context)
+        if (ColorBlocksMod.COLOR_BLOCK_ENTITY != null) {
+            event.registerBlockEntityRenderer(
+                    ColorBlocksMod.COLOR_BLOCK_ENTITY.get(),
+                    ColorBlockEntityRenderer::new
             );
         }
     }
@@ -28,7 +25,8 @@ public class ClientSetup {
     @SubscribeEvent
     public static void onAddPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-            event.addPackFinder((profile, factory) -> new ColorBlockResourcePack());
+            // Resource pack will be added dynamically at runtime
+            // For now, BlockEntityRenderer handles all rendering
         }
     }
 }

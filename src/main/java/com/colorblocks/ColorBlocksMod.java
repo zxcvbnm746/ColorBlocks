@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Mod(ColorBlocksMod.MOD_ID)
 public class ColorBlocksMod {
@@ -26,8 +28,8 @@ public class ColorBlocksMod {
     public static final List<ItemSupplier> ITEM_SUPPLIERS = new ArrayList<>();
 
     // Registry holders (populated during registration)
-    public static final java.util.Map<String, DeferredHolder<Block, Block>> BLOCK_HOLDERS = new java.util.HashMap<>();
-    public static final java.util.Map<String, DeferredHolder<Item, Item>> ITEM_HOLDERS = new java.util.HashMap<>();
+    public static final Map<String, DeferredHolder<Block, Block>> BLOCK_HOLDERS = new HashMap<>();
+    public static final Map<String, DeferredHolder<Item, Item>> ITEM_HOLDERS = new HashMap<>();
 
     // BlockEntityType holder (populated after block registration)
     public static DeferredHolder<BlockEntityType<?>, BlockEntityType<ColorBlockEntity>> COLOR_BLOCK_ENTITY;
@@ -55,19 +57,16 @@ public class ColorBlocksMod {
             BLOCK_HOLDERS.put(bs.id, holder);
         }
 
-        // Step 3: Register BlockEntityType (after blocks are registered, so validBlocks is non-empty)
-        Block firstBlock = BLOCK_HOLDERS.get("cb_00000").get();
+        // Step 3: Register BlockEntityType
+        // Collect all blocks for BlockEntityType
+        Block[] allBlocks = BLOCK_HOLDERS.values().stream()
+                .map(DeferredHolder::get)
+                .toArray(Block[]::new);
+
         COLOR_BLOCK_ENTITY = BlockRegistry.BLOCK_ENTITY_TYPES.register("color_block_entity", () ->
                 BlockEntityType.Builder.<ColorBlockEntity>of(
-                        (type, pos, state) -> {
-                            Block block = state.getBlock();
-                            if (block instanceof ColorBlock cb) {
-                                return new ColorBlockEntity(type, pos, state,
-                                        cb.r, cb.g, cb.b, cb.blockType);
-                            }
-                            return null;
-                        },
-                        firstBlock
+                        ColorBlockEntity::new,
+                        allBlocks
                 ).build(null)
         );
 
