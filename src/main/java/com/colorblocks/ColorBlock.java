@@ -22,7 +22,7 @@ public class ColorBlock extends BaseEntityBlock {
                 .strength(5.0f, 6.0f)
                 .sound(SoundType.METAL)
                 .noOcclusion()
-                .isRedstoneConductor((s, g, p) -> false)
+                .isRedstoneConductor((state, getter, pos) -> false)
         );
         this.r = r;
         this.g = g;
