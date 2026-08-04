@@ -3,6 +3,7 @@ package com.colorblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -10,8 +11,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.Nullable;
 
 public class ColorBlock extends BaseEntityBlock {
@@ -23,7 +22,7 @@ public class ColorBlock extends BaseEntityBlock {
                 .strength(5.0f, 6.0f)
                 .sound(SoundType.METAL)
                 .noOcclusion()
-                .isRedstoneConductor((s, c, p) -> false)
+                .isRedstoneConductor((s, g, p) -> false)
         );
         this.r = r;
         this.g = g;
@@ -33,7 +32,7 @@ public class ColorBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.INVISIBLE; // We render via BlockEntityRenderer
+        return RenderShape.INVISIBLE;
     }
 
     @Override
@@ -44,7 +43,8 @@ public class ColorBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        ColorBlockEntity be = new ColorBlockEntity(ColorBlocksMod.COLOR_BLOCK_ENTITY.get(), pos, state);
+        ColorBlockEntity be = new ColorBlockEntity(
+                ColorBlocksMod.COLOR_BLOCK_ENTITY.get(), pos, state);
         be.setColor(r, g, b, blockType);
         return be;
     }
@@ -52,11 +52,6 @@ public class ColorBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return null; // No tick needed
-    }
-
-    @Override
-    public boolean useShapeForLightOcclusion(BlockState state) {
-        return blockType != BlockRegistry.TYPE_FULL;
+        return null;
     }
 }

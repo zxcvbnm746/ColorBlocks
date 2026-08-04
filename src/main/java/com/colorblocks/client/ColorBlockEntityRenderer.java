@@ -1,11 +1,10 @@
 package com.colorblocks.client;
 
 import com.colorblocks.ColorBlockEntity;
-import com.colorblocks.BlockRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.MultiBufferSource;
 
 public class ColorBlockEntityRenderer implements BlockEntityRenderer<ColorBlockEntity> {
 
