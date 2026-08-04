@@ -5,14 +5,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class ColorBlockRenderer {
 
-    /**
-     * Render a color block directly with colored quads. Bypasses the texture system.
-     */
     public static void renderColorBlock(PoseStack poseStack, MultiBufferSource buffer,
                                         int r5, int g5, int b5, int blockType,
                                         int packedLight, int packedOverlay) {
@@ -32,25 +28,25 @@ public class ColorBlockRenderer {
 
         VertexConsumer vc = buffer.getBuffer(RenderType.solid());
         Matrix4f m = poseStack.last().pose();
-        Matrix3f n = poseStack.last().normal();
 
         // West (-X), East (+X), Bottom (-Y), Top (+Y), North (-Z), South (+Z)
-        quad(vc, m, n, x1, y1, z2, x1, y2, z1, color, packedLight, packedOverlay, -1, 0, 0);
-        quad(vc, m, n, x2, y1, z1, x2, y2, z2, color, packedLight, packedOverlay,  1, 0, 0);
-        quad(vc, m, n, x1, y1, z1, x2, y1, z2, color, packedLight, packedOverlay,  0,-1, 0);
-        quad(vc, m, n, x1, y2, z2, x2, y2, z1, color, packedLight, packedOverlay,  0, 1, 0);
-        quad(vc, m, n, x1, y1, z1, x2, y2, z1, color, packedLight, packedOverlay,  0, 0,-1);
-        quad(vc, m, n, x2, y1, z2, x1, y2, z2, color, packedLight, packedOverlay,  0, 0, 1);
+        quad(vc, m, x1, y1, z2, x1, y2, z1, color, packedLight, packedOverlay, -1, 0, 0, poseStack);
+        quad(vc, m, x2, y1, z1, x2, y2, z2, color, packedLight, packedOverlay,  1, 0, 0, poseStack);
+        quad(vc, m, x1, y1, z1, x2, y1, z2, color, packedLight, packedOverlay,  0,-1, 0, poseStack);
+        quad(vc, m, x1, y2, z2, x2, y2, z1, color, packedLight, packedOverlay,  0, 1, 0, poseStack);
+        quad(vc, m, x1, y1, z1, x2, y2, z1, color, packedLight, packedOverlay,  0, 0,-1, poseStack);
+        quad(vc, m, x2, y1, z2, x1, y2, z2, color, packedLight, packedOverlay,  0, 0, 1, poseStack);
     }
 
-    private static void quad(VertexConsumer vc, Matrix4f m, Matrix3f n,
+    private static void quad(VertexConsumer vc, Matrix4f m,
                              float x1, float y1, float z1,
                              float x2, float y2, float z2,
                              int color, int light, int overlay,
-                             float nx, float ny, float nz) {
-        vc.addVertex(m, x1, y1, z1).setColor(color).setUv(0, 0).setOverlay(overlay).setLight(light).setNormal(n, nx, ny, nz);
-        vc.addVertex(m, x2, y1, z2).setColor(color).setUv(1, 0).setOverlay(overlay).setLight(light).setNormal(n, nx, ny, nz);
-        vc.addVertex(m, x2, y2, z2).setColor(color).setUv(1, 1).setOverlay(overlay).setLight(light).setNormal(n, nx, ny, nz);
-        vc.addVertex(m, x1, y2, z1).setColor(color).setUv(0, 1).setOverlay(overlay).setLight(light).setNormal(n, nx, ny, nz);
+                             float nx, float ny, float nz,
+                             PoseStack poseStack) {
+        vc.addVertex(m, x1, y1, z1).setColor(color).setUv(0, 0).setOverlay(overlay).setLight(light).setNormal(poseStack.last(), nx, ny, nz);
+        vc.addVertex(m, x2, y1, z2).setColor(color).setUv(1, 0).setOverlay(overlay).setLight(light).setNormal(poseStack.last(), nx, ny, nz);
+        vc.addVertex(m, x2, y2, z2).setColor(color).setUv(1, 1).setOverlay(overlay).setLight(light).setNormal(poseStack.last(), nx, ny, nz);
+        vc.addVertex(m, x1, y2, z1).setColor(color).setUv(0, 1).setOverlay(overlay).setLight(light).setNormal(poseStack.last(), nx, ny, nz);
     }
 }

@@ -1,8 +1,10 @@
 package com.colorblocks;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -53,7 +55,8 @@ public class ColorBlocksMod {
 
         COLOR_BLOCK_ENTITY = BlockRegistry.BLOCK_ENTITY_TYPES.register("color_block_entity", () ->
                 BlockEntityType.Builder.of(
-                        ColorBlockEntity::new,
+                        (BlockEntityType<ColorBlockEntity> type, BlockPos pos, BlockState state) ->
+                                new ColorBlockEntity(type, pos, state),
                         allBlocks
                 ).build(null)
         );
