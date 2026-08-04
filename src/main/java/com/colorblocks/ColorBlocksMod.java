@@ -54,13 +54,8 @@ public class ColorBlocksMod {
                 .toArray(Block[]::new);
 
         COLOR_BLOCK_ENTITY = BlockRegistry.BLOCK_ENTITY_TYPES.register("color_block_entity", () ->
-                BlockEntityType.Builder.of(
-                        new BlockEntityType.BlockEntitySupplier<>() {
-                            @Override
-                            public ColorBlockEntity create(BlockPos pos, BlockState state) {
-                                return new ColorBlockEntity(pos, state);
-                            }
-                        },
+                BlockEntityType.Builder.<ColorBlockEntity>of(
+                        ColorBlockEntity::new,
                         allBlocks
                 ).build(null)
         );
