@@ -1,0 +1,20 @@
+# Gradle files
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log
+
+# Local config
+local.properties
